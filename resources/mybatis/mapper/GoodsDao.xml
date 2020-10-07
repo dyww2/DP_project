@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DpMa.dao.GoodsDao">
+    <resultMap id="BaseResultMap" type="DpMa.pojo.entity.Goods">
+        <id column="goods_id" jdbcType="INTEGER" property="goodsId"/>
+        <result column="goods_type_id" jdbcType="INTEGER" property="goodsTypeId"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="img" jdbcType="VARCHAR" property="img"/>
+        <result column="old_price" jdbcType="DOUBLE" property="oldPrice"/>
+        <result column="price" jdbcType="DOUBLE" property="price"/>
+        <result column="on_sale" jdbcType="VARCHAR" property="onSale"/>
+        <result column="count" jdbcType="INTEGER" property="count"/>
+        <result column="merchant_name" jdbcType="VARCHAR" property="merchantName"/>
+        <result column="evaluation_count" jdbcType="INTEGER" property="evaluationCount"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="DpMa.pojo.entity.Goods">
+        <result column="detail" jdbcType="LONGVARCHAR" property="detail"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    goods_id, goods_type_id, title, img, old_price, price, on_sale, `count`, merchant_name,
+    evaluation_count
+  </sql>
+    <sql id="Blob_Column_List">
+    detail
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from goods
+        where goods_id = #{goodsId,jdbcType=INTEGER}
+    </select>
+    <select id="getGoodsByTypeId" resultType="DpMa.pojo.entity.Goods">
+        select <include refid="Base_Column_List"></include> from goods where goods_type_id=#{goodsTypeId};
+    </select>
+    <select id="selectGoodsByIds" resultType="DpMa.pojo.entity.Goods">
+        select
+        <include refid="Base_Column_List"/>
+        from goods where goods_id in
+        <foreach collection="ids" open="(" close=")" separator="," item="s">
+            #{s.goodsId}
+        </foreach>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from goods
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" keyColumn="goods_id" keyProperty="goodsId" parameterType="DpMa.pojo.entity.Goods"
+            useGeneratedKeys="true">
+    insert into goods (goods_type_id, title, img,
+      old_price, price, on_sale,
+      `count`, merchant_name, evaluation_count,
+      detail)
+    values (#{goodsTypeId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR},
+      #{oldPrice,jdbcType=DOUBLE}, #{price,jdbcType=DOUBLE}, #{onSale,jdbcType=VARCHAR},
+      #{count,jdbcType=INTEGER}, #{merchantName,jdbcType=VARCHAR}, #{evaluationCount,jdbcType=INTEGER},
+      #{detail,jdbcType=LONGVARCHAR})
+  </insert>
+    <insert id="insertSelective" keyColumn="goods_id" keyProperty="goodsId"
+            parameterType="DpMa.pojo.entity.Goods" useGeneratedKeys="true">
+        insert into goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsTypeId != null">
+                goods_type_id,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="img != null">
+                img,
+            </if>
+            <if test="oldPrice != null">
+                old_price,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="onSale != null">
+                on_sale,
+            </if>
+            <if test="count != null">
+                `count`,
+            </if>
+            <if test="merchantName != null">
+                merchant_name,
+            </if>
+            <if test="evaluationCount != null">
+                evaluation_count,
+            </if>
+            <if test="detail != null">
+                detail,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsTypeId != null">
+                #{goodsTypeId,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="img != null">
+                #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="oldPrice != null">
+                #{oldPrice,jdbcType=DOUBLE},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DOUBLE},
+            </if>
+            <if test="onSale != null">
+                #{onSale,jdbcType=VARCHAR},
+            </if>
+            <if test="count != null">
+                #{count,jdbcType=INTEGER},
+            </if>
+            <if test="merchantName != null">
+                #{merchantName,jdbcType=VARCHAR},
+            </if>
+            <if test="evaluationCount != null">
+                #{evaluationCount,jdbcType=INTEGER},
+            </if>
+            <if test="detail != null">
+                #{detail,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="DpMa.pojo.entity.Goods">
+        update goods
+        <set>
+            <if test="goodsTypeId != null">
+                goods_type_id = #{goodsTypeId,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="img != null">
+                img = #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="oldPrice != null">
+                old_price = #{oldPrice,jdbcType=DOUBLE},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DOUBLE},
+            </if>
+            <if test="onSale != null">
+                on_sale = #{onSale,jdbcType=VARCHAR},
+            </if>
+            <if test="count != null">
+                `count` = #{count,jdbcType=INTEGER},
+            </if>
+            <if test="merchantName != null">
+                merchant_name = #{merchantName,jdbcType=VARCHAR},
+            </if>
+            <if test="evaluationCount != null">
+                evaluation_count = #{evaluationCount,jdbcType=INTEGER},
+            </if>
+            <if test="detail != null">
+                detail = #{detail,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where goods_id = #{goodsId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="DpMa.pojo.entity.Goods">
+    update goods
+    set goods_type_id = #{goodsTypeId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      img = #{img,jdbcType=VARCHAR},
+      old_price = #{oldPrice,jdbcType=DOUBLE},
+      price = #{price,jdbcType=DOUBLE},
+      on_sale = #{onSale,jdbcType=VARCHAR},
+      `count` = #{count,jdbcType=INTEGER},
+      merchant_name = #{merchantName,jdbcType=VARCHAR},
+      evaluation_count = #{evaluationCount,jdbcType=INTEGER},
+      detail = #{detail,jdbcType=LONGVARCHAR}
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="DpMa.pojo.entity.Goods">
+    update goods
+    set goods_type_id = #{goodsTypeId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      img = #{img,jdbcType=VARCHAR},
+      old_price = #{oldPrice,jdbcType=DOUBLE},
+      price = #{price,jdbcType=DOUBLE},
+      on_sale = #{onSale,jdbcType=VARCHAR},
+      `count` = #{count,jdbcType=INTEGER},
+      merchant_name = #{merchantName,jdbcType=VARCHAR},
+      evaluation_count = #{evaluationCount,jdbcType=INTEGER}
+    where goods_id = #{goodsId,jdbcType=INTEGER}
+  </update>
+</mapper>

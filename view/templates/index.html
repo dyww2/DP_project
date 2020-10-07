@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    #goods_title:hover {
+        color: red;
+        cursor: pointer;
+    }
+    #loginBtn:hover {
+        color: red;
+        cursor: pointer;
+    }
+    [id^=type-]:hover {
+        color: red;
+        cursor: pointer;
+    }
+</style>
+<div th:replace="plugins/js::js"></div>
+<body style="padding: 20px">
+<!--// 头部-->
+<div style="display: flex;align-items: center">
+    <div style="width: 40%">
+        <img th:src="@{/images/img/logo.png}" style="height: 65px;width: 120px"/>
+    </div>
+    <div style="width: 40%">
+
+        <div style="display: flex;border: solid red 2px; ">
+            <div style="width: 80%">
+                <input type="text" style="height: 30px;border: none;width: 100%">
+            </div>
+            <div style="color: white;background: red;padding: 5px 20px;width: 20%;text-align: center">
+                搜索
+            </div>
+        </div>
+
+    </div>
+    <div onclick="window.location='/pages/back/shopCar/shwoMyCar'"
+         style="cursor: pointer;width: 20%;text-align: center;border: solid lightgray 1px ;background: rgb(245,245,245);padding: 6px;color: red;margin-left: 30px;">
+        我的购物车(<span th:text="${session.carCount}">10</span>)
+    </div>
+    <div onclick="window.location='/pages/front/loginPage'" id="loginBtn"
+         style="cursor: pointer;width: 50px;text-align: center;border: solid lightgray 1px ;background: rgb(245,245,245);padding: 6px;margin-left: 30px;">
+        登录
+    </div>
+    <div style="cursor: pointer;width: 50px;text-align: center;border: solid lightgray 1px ;background: rgb(245,245,245);padding: 6px;margin-left: 30px;"><span><a href="/pages/front/toPage?url=/pages/front/login/regist.html">注册</a></span></div>
+</div>
+<div style="display: flex;">
+    <div style="width: 20%;border: solid red 1px ">
+        <div style="display: flex;align-items: center;padding: 20px" th:each="t:${types}">
+            <div th:text="${t.typeName}" style="font-weight: bold;font-size: 16px">电子</div>
+            <div style="display: flex;flex-wrap: wrap;margin-left: 30px">
+                <div th:id="'type-'+${ct.goodsTypeId}" style="margin: 5px" th:each="ct:${t.childrenTypes}"
+                     th:text="${ct.typeName}">手机
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="width: 80%;border: solid red 1px;display: flex;padding: 20px 5px;flex-wrap: wrap" id="goodsDiv"></div>
+</div>
+<script th:inline="javascript" type="text/javascript">
+    $(function () {
+        layui.use(['table', 'form', 'layer'], function () {
+            var table = layui.table;
+            var layer = layui.layer;
+            var form = layui.form;
+
+            $("[id^=type-]").click(function () {
+                let typeId = this.id.split('-')[1];
+                $("[id^=type-]").css({color: ''});
+                $(this).css({color: 'red'});
+
+                $.post('/pages/back/goods/getGoodsByTypeId/' + typeId, {}, function (res) {
+                    let goodsDiv = $("#goodsDiv");
+                    goodsDiv.empty();//清空goodsDiv里边的商品
+                    if (res.res) {
+                        let data = res.data;
+                        for (let x = 0; x < data.length; x++) {
+                            let g = data[x];
+
+                            let goodsItem = $("<div style=\"padding: 10px;border: solid lightgray 1px;box-shadow: 0 0 5px lightgray;width: 26%;;margin: 15px\">\n" +
+                                "            <div><img src='" + g.img + "' style='width: 100%;height: 250px'></div>\n" +
+                                "            <div style=\"color: orangered;padding: 5px 0\">¥<span style=\"font-size: 22px;\">" + g.price + "</span></div>\n" +
+                                "            <div id=\"goods_title\">" + g.title + "</div>\n" +
+                                "            <div style=\"color: orangered;font-size:12px;font-weight: bold;padding: 5px 0;color: #646fb0\">" + g.evaluationCount + "万+<span\n" +
+                                "                    style=\"color: gray\">条评价</span></div>\n" +
+                                "            <div style=\"color: gray;font-size: 12px\">" + g.merchantName + "</div>\n" +
+                                "        </div>");
+
+                            goodsDiv.append(goodsItem);
+
+                            goodsItem.click(function () {
+                                window.location = 'pages/front/goods/goodsDetail/' + g.goodsId;
+
+                            })
+
+                        }
+                    }
+                });
+            })
+            $("[id^=type-]:eq(0)").click();
+        });
+    })
+</script>
+</body>
+</html>
