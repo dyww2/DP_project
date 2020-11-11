@@ -6,6 +6,10 @@
           <option name="url" value="https://github.com/boat-du/putest" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/boat-du/gatewayTcpServer.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="C:\Users\75798\Desktop\课程\设计模式\market-goods\market" />
